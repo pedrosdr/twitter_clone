@@ -1,9 +1,3 @@
-<?php
-	echo '<pre>';
-	print_r($this->data);
-	echo '</pre>';
-?>
-
 <div class="container-fluid h-100">
 	<div class="row h-100">
     
@@ -27,18 +21,27 @@
     </div>
 
     <div class="col-md-6 pt-4 pl-5 pr-5">
-		<form>
+		<form method="post" action="/autenticar">
 			<div class="row">
 				<div class="col">
-					<input type="text" class="form-control" placeholder="E-mail">
+					<input name="email" type="text" class="form-control" placeholder="E-mail">
 				</div>
 				<div class="col">
-					<input type="text" class="form-control" placeholder="Senha">
+					<input name="senha" type="text" class="form-control" placeholder="Senha">
 				</div>
 				<div class="col-auto">
 					<button type="submit" class="btn btn-primary mb-2">Entrar</button>
 				</div>
 			</div>
+
+			<?php if($this->data->login == 'email_not_registered') { ?>
+				<small class="text text-danger">Email inválido</small>
+			<?php } ?>
+
+			<?php if($this->data->login == 'wrong_password') { ?>
+				<small class="text text-danger">Senha inválida</small>
+			<?php } ?>
+			
 		</form>
 
 		<div class="row pt-5 pl-5 pr-5">

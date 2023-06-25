@@ -1,10 +1,17 @@
 <?php
     namespace MF\Controllers;
 
+    use stdClass;
+
     class Controller
     {
         protected string $view;
-        protected array $data;
+        protected stdClass $data;
+
+        public function __construct()
+        {
+            $this->data = new stdClass();
+        }
 
         public function render(string $view, string $layout)
         {

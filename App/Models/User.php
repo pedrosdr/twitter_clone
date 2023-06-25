@@ -1,11 +1,12 @@
 <?php
     namespace App\Models;
-
-use PDO;
+    use MF\Security\Hasher;
+    use PDO;
 
     class User
     {
         // fields
+        private PDO $db;
         private ?int $id;
         private ?string $name;
         private ?string $email;
@@ -13,8 +14,9 @@ use PDO;
         private ?string $salt;
 
         // constructors
-        public function __construct(?int $id, ?string $name, ?string $email, ?string $hash)
+        public function __construct(PDO $db, ?string $name, ?string $email, ?int $id = null, ?string $hash = null)
         {
+            $this->db = $db;
             $this->id = $id;
             $this->name = $name;
             $this->email = $email;
@@ -38,9 +40,41 @@ use PDO;
             $instances = array();
             foreach($data as $item)
             {
-                $instances[] = new User($item['id'], $item['nome'], $item['email'], $item['senha']);
+                $instances[] = new User($db, $item['nome'], $item['email'], $item['id'], $item['senha']);
             }
             return $instances;  
+        }
+
+        public static function getUsersByEmail(string $email, PDO $db)
+        {
+            $query = 'SELECT id, nome, email, senha FROM usuarios WHERE email = :email';
+            $stmt = $db->prepare($query);
+            $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $users = array();
+            foreach($result as $item)
+            {
+                $users[] = new User($db, $item['nome'], $item['email'], $item['id'], $item['senha']);
+            }
+            return $users;
+        }
+
+        public function save($password)
+        {
+            $query = 'INSERT INTO usuarios(nome, email, senha) VALUES(:nome, :email, :senha)';
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':nome', $this->name, PDO::PARAM_STR);
+            $statement->bindValue(':email', $this->email, PDO::PARAM_STR);
+
+            $hasher = new Hasher($password);
+            $statement->bindValue(':senha', $hasher->getSalt() . $hasher->getPasswordHash() , PDO::PARAM_STR);
+            $statement->execute();
+
+            $this->password = $hasher->getPasswordHash();
+            $this->salt = $hasher->getSalt();
         }
     }
 ?>
