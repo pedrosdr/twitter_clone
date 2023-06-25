@@ -4,6 +4,7 @@
     class Controller
     {
         protected string $view;
+        protected array $data;
 
         public function render(string $view, string $layout)
         {
