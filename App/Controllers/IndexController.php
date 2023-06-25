@@ -1,16 +1,18 @@
 <?php
     namespace App\Controllers;
 
-    class IndexController
+    use MF\Controllers\Controller;
+
+    class IndexController extends Controller
     {
-        public function index()
+        public function home()
         {
-            echo 'index';
+            $this->render('home', 'layout1');
         }
 
         public function sobreNos()
         {
-            echo 'sobreNos';
+            $this->render('sobre_nos', 'layout1');
         }
     }
 ?>

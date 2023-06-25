@@ -1,5 +1,5 @@
 <?php
-    namespace MF\Controllers;
+    namespace MF;
 
     abstract class Bootstrap 
     {
