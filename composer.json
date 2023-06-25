@@ -1,0 +1,18 @@
+{
+    "name": "projects/twitter_clone",
+    "require": {
+        "php": ">= 7.0"
+    },
+    "authors": [
+        {
+            "name":  "Pedro Sartori Dias dos Reis",
+            "email": "pedrosartdr@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/",
+            "MF\\": "vendor/MF/"
+        }
+    }
+}
