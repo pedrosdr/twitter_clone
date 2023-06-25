@@ -1,7 +1,7 @@
 <?php
     namespace App;
 
-    use MF\Bootstrap;
+    use MF\Init\Bootstrap;
     use MF\Controllers\RouteSettings;
 
     class Route extends Bootstrap
@@ -15,7 +15,7 @@
         {
             $routes = array();
             $routes[] = new RouteSettings('home', '/', 'index', 'home');
-            $routes[] = new RouteSettings('sobre_nos', '/sobre_nos', 'index', 'sobreNos');
+            $routes[] = new RouteSettings('inscreverse', '/inscreverse', 'index', 'subscribe');
             $this->routes = $routes;
         }
     }

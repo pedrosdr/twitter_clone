@@ -7,12 +7,12 @@
     {
         public function home()
         {
-            $this->render('home', 'layout1');
+            $this->render('index', 'layout');
         }
 
-        public function sobreNos()
+        public function subscribe()
         {
-            $this->render('sobre_nos', 'layout1');
+            $this->render('inscreverse', 'layout');
         }
     }
 ?>

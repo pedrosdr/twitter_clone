@@ -1,5 +1,5 @@
 <?php
-    namespace MF;
+    namespace MF\Init;
 
     abstract class Bootstrap 
     {
@@ -32,6 +32,8 @@
 
                     $action = $route->getAction();
                     $controller->$action();
+
+                    break;
                 }
             }
         }
