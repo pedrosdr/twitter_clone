@@ -14,7 +14,7 @@
         private ?string $salt;
 
         // constructors
-        public function __construct(PDO $db, ?string $name, ?string $email, ?int $id = null, ?string $hash = null)
+        public function __construct(PDO $db, ?string $name = null, ?string $email = null, ?int $id = null, ?string $hash = null)
         {
             $this->db = $db;
             $this->id = $id;
@@ -26,6 +26,8 @@
 
         // properties
         public function getId() {return $this->id;}
+        public function setId(int $set) {$this->id = $set;}
+
         public function getName() {return $this->name;}
         public function getEmail() {return $this->email;}
         public function getPassword() {return $this->password;}
@@ -60,6 +62,41 @@
                 $users[] = new User($db, $item['nome'], $item['email'], $item['id'], $item['senha']);
             }
             return $users;
+        }
+
+        public static function searchName(string $pattern, PDO $db)
+        {
+            $query = 'SELECT id, nome, email FROM usuarios WHERE nome LIKE :pattern';
+            $stmt = $db->prepare($query);
+            $stmt->bindValue(':pattern', '%' . $pattern . '%');
+            $stmt->execute();
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $users = array();
+            foreach($result as $item)
+            {
+                $users[] = new User($db, $item['nome'], $item['email'], $item['id']);
+            }
+            return $users;
+        }
+
+        public function addFollowed($followedId)
+        {
+            $query = 'INSERT INTO usuarios_seguindo (id_usuario, id_seguindo) VALUES(:id_usuario, :id_seguindo)';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':id_usuario', $this->id, PDO::PARAM_INT);
+            $stmt->bindValue(':id_seguindo', $followedId, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+
+        public function removeFollowed($followedId)
+        {
+            $query = 'DELETE FROM usuarios_seguindo WHERE id_usuario = :id_usuario AND id_seguindo = :id_seguindo';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':id_usuario', $this->id, PDO::PARAM_INT);
+            $stmt->bindValue(':id_seguindo', $followedId, PDO::PARAM_INT);
+            $stmt->execute();
         }
 
         public function save($password)

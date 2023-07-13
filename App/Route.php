@@ -20,6 +20,10 @@
             $routes[] = new RouteSettings('registrar', '/registrar', 'index', 'signUp');
             $routes[] = new RouteSettings('autenticar', '/autenticar', 'auth', 'authenticate');
             $routes[] = new RouteSettings('timeline', '/timeline', 'app', 'timeline');
+            $routes[] = new RouteSettings('sair', '/sair', 'app', 'exit');
+            $routes[] = new RouteSettings('tweet', '/tweet', 'app', 'tweet');
+            $routes[] = new RouteSettings('quem_seguir', '/quem_seguir', 'app', 'followUsers');
+            $routes[] = new RouteSettings('action', '/action', 'app', 'action');
 
             $this->routes = $routes;
         }

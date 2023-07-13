@@ -2,6 +2,7 @@
     namespace App\Controllers;
 
     use App\Connection;
+    use App\Models\Tweet;
     use App\Models\User;
     use MF\Controllers\Controller;
 

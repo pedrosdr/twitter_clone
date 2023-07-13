@@ -22,7 +22,7 @@
         public function content()
         {
             $controller = str_replace('Controller', '', str_replace('App\\Controllers\\', '', get_class($this)));
-            require_once('../App/Views//' . $controller . '//' . $this->view . '.phtml');
+            require_once('../App/Views/' . $controller . '/' . $this->view . '.phtml');
         }
     }
 ?>
