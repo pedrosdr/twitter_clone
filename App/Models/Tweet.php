@@ -79,6 +79,77 @@
             return $instances;
         }
 
+        public static function getFollowedUsersTweets(PDO $db, $includeCurrentUser = FALSE)
+        {
+            Auth::checkAuth();
+
+            if($includeCurrentUser)
+            {
+                $query = 'SELECT
+                                t.id,
+                                t.id_usuario,
+                                t.tweet,
+                                t.data,
+                                u.nome,
+                                u.email
+                            FROM 
+                                tweets AS t
+                            INNER JOIN
+                                usuarios AS u
+                            ON 
+                                u.id = t.id_usuario
+                            WHERE
+                                (SELECT
+                                    COUNT(*)
+                                FROM 
+                                    usuarios_seguindo AS us
+                                WHERE
+                                    us.id_usuario = :user_id AND us.id_seguindo = u.id
+                                ) = 1
+                                OR 
+                                    u.id = :user_id
+                            ORDER BY t.data DESC';
+            }
+            else
+            {
+                $query = 'SELECT
+                                t.id,
+                                t.id_usuario,
+                                t.tweet,
+                                t.data,
+                                u.nome,
+                                u.email
+                            FROM 
+                                tweets AS t
+                            INNER JOIN
+                                usuarios AS u
+                            ON 
+                                u.id = t.id_usuario
+                            WHERE
+                                (SELECT
+                                    COUNT(*)
+                                FROM 
+                                    usuarios_seguindo AS us
+                                WHERE
+                                    us.id_usuario = :user_id AND us.id_seguindo = u.id
+                                ) = 1
+                            ORDER BY t.data DESC';
+            }
+            
+            $stmt = $db->prepare($query);
+            $stmt->bindValue(':user_id', $_SESSION['id'], PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public static function removeTweet(int $id, PDO $db)
+        {
+            $query = 'DELETE FROM tweets WHERE id = :id';
+            $stmt = $db->prepare($query);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+
         public function save()
         { 
             $query = 'INSERT INTO tweets(id_usuario, tweet) VALUES (:id_usuario, :tweet)';

@@ -21,6 +21,10 @@
 
             Auth::checkAuth();
 
+            $user = new User(Connection::getDb());
+            $user->setId($_SESSION['id']);
+            $this->data->userInfo = $user->getInfo();
+
             $this->render('timeline', 'layout');
         }
 
@@ -62,10 +66,23 @@
 
             $this->data->searchResult = null;
 
+            $user = new User(Connection::getDb());
+            $user->setId($_SESSION['id']);
+            $this->data->userInfo = $user->getInfo();
+
             if(isset($_GET['search']))
                 $this->data->searchResults = User::searchName($_GET['search'], Connection::getDb());
 
             $this->render('quemSeguir', 'layout');
+        }
+
+        public function removeTweet()
+        {
+            session_start();
+            Auth::checkAuth();
+            
+            Tweet::removeTweet($_GET['id'], Connection::getDb());
+            header('Location: /timeline');
         }
 
         public function exit()

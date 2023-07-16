@@ -5,8 +5,8 @@
 	use App\Models\Tweet;
 	use App\Models\User;
 
-	$tweets = Tweet::getTweetsByEmail(Connection::getDb(), $_SESSION['email']);
 	$user = User::getUsersByEmail($_SESSION['email'], Connection::getDb())[0];
+	$tweets = Tweet::getFollowedUsersTweets(Connection::getDb(), TRUE);
 ?>
 
 <nav class="navbar navbar-expand-lg menu">
@@ -46,17 +46,17 @@
 
 						<div class="col">
 							<span class="perfilPainelItem">Tweets</span><br />
-							<span class="perfilPainelItemValor"><?=count($tweets)?></span>
+							<span class="perfilPainelItemValor"><?=count($user->getTweets())?></span>
 						</div>
 
 						<div class="col">
 							<span class="perfilPainelItem">Seguindo</span><br />
-							<span class="perfilPainelItemValor">0</span>
+							<span class="perfilPainelItemValor"><?= $this->data->userInfo['following'] ?></span>
 						</div>
 
 						<div class="col">
 							<span class="perfilPainelItem">Seguidores</span><br />
-							<span class="perfilPainelItemValor">0</span>
+							<span class="perfilPainelItemValor"><?= $this->data->userInfo['followers'] ?></span>
 						</div>
 
 					</div>
@@ -83,15 +83,17 @@
 			<?php foreach($tweets as $tweet) { ?>
 			<div class="row tweet">
 				<div class="col">
-					<p><strong><?=$user->getName()?></strong> <span class="text text-muted"> - <?=$tweet->getDate()->format('d/m/Y H:i')?></span></p>
-					<p><?=$tweet->getTweet()?></p>
+					<p><strong><?=$tweet['nome']?></strong> <span class="text text-muted"> - <?=$tweet['data']?></span></p>
+					<p><?=$tweet['tweet']?></p>
 
+					<?php if($tweet['id_usuario'] == $_SESSION['id']) {?>
 					<br />
-					<form>
+					<form action="/remover_tweet?id=<?= $tweet['id'] ?>" method="post">
 						<div class="col d-flex justify-content-end">
 							<button type="submit" class="btn btn-danger"><small>Remover</small></button>
 						</div>
 					</form>
+					<?php } ?>
 				</div>
 			</div>
 			<?php } ?>

@@ -24,6 +24,7 @@
             $routes[] = new RouteSettings('tweet', '/tweet', 'app', 'tweet');
             $routes[] = new RouteSettings('quem_seguir', '/quem_seguir', 'app', 'followUsers');
             $routes[] = new RouteSettings('action', '/action', 'app', 'action');
+            $routes[] = new RouteSettings('remover_tweet', '/remover_tweet', 'app', 'removeTweet');
 
             $this->routes = $routes;
         }

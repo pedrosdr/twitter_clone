@@ -27,7 +27,7 @@
 					
 					<div class="row mt-2 mb-2">
 						<div class="col mb-2">
-							<span class="perfilPainelNome">Nome do Usuário</span>
+							<span class="perfilPainelNome"><?= $this->data->userInfo['name'] ?></span>
 						</div>
 					</div>
 
@@ -35,17 +35,17 @@
 
 						<div class="col">
 							<span class="perfilPainelItem">Tweets</span><br />
-							<span class="perfilPainelItemValor">0</span>
+							<span class="perfilPainelItemValor"><?= $this->data->userInfo['tweets'] ?></span>
 						</div>
 
 						<div class="col">
 							<span class="perfilPainelItem">Seguindo</span><br />
-							<span class="perfilPainelItemValor">0</span>
+							<span class="perfilPainelItemValor"><?= $this->data->userInfo['following'] ?></span>
 						</div>
 
 						<div class="col">
 							<span class="perfilPainelItem">Seguidores</span><br />
-							<span class="perfilPainelItemValor">0</span>
+							<span class="perfilPainelItemValor"><?= $this->data->userInfo['followers'] ?></span>
 						</div>
 
 					</div>
@@ -96,8 +96,11 @@
 								<div class="col-md-6 d-flex justify-content-end">
 									<?php if($user->getId() != $_SESSION['id']) { ?>
 									<div>
-										<a href="/action?action=follow&id=<?= $user->getId() ?>" class="btn btn-success">Seguir</a>
-										<a href="/action?action=unfollow&id=<?= $user->getId() ?>" class="btn btn-danger">Deixar de seguir</a>
+										<?php if(!$user->getFollowing()) { ?>
+											<a href="/action?action=follow&id=<?= $user->getId() ?>" class="btn btn-success">Seguir</a>
+										<?php }else{ ?>
+											<a href="/action?action=unfollow&id=<?= $user->getId() ?>" class="btn btn-danger">Deixar de seguir</a>
+										<?php } ?>
 									</div>
 									<?php } ?>
 								</div>
