@@ -1,12 +1,10 @@
 <?php
-	session_start();
 
 	use App\Connection;
 	use App\Models\Tweet;
 	use App\Models\User;
 
 	$user = User::getUsersByEmail($_SESSION['email'], Connection::getDb())[0];
-	$tweets = Tweet::getFollowedUsersTweets(Connection::getDb(), TRUE);
 ?>
 
 <nav class="navbar navbar-expand-lg menu">
@@ -80,8 +78,8 @@
 				</div>
 			</div>
 
-			<?php foreach($tweets as $tweet) { ?>
-			<div class="row tweet">
+			<?php foreach($this->data->tweets as $tweet) { ?>
+			<div class="row tweet p-1">
 				<div class="col">
 					<p><strong><?=$tweet['nome']?></strong> <span class="text text-muted"> - <?=$tweet['data']?></span></p>
 					<p><?=$tweet['tweet']?></p>
@@ -97,6 +95,18 @@
 				</div>
 			</div>
 			<?php } ?>
+
+			<div class="row mt-3">
+				<nav aria-label="Page navigation example">
+					<ul class="pagination">
+						<?php for($i = 1; $i <= $this->data->totalPages; $i++) { ?>
+							<li class="page-item <?php if($i == $this->page) { ?>active<?php } ?>">
+								<a class="page-link" href="?pagina=<?=$i?>"><?=$i?></a>
+							</li>
+						<?php } ?>
+					</ul>
+				</nav>
+			</div>
 
 		</div>
 

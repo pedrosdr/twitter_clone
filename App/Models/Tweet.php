@@ -55,6 +55,75 @@
             return $instances;
         }
 
+        public static function getTweetsByPage(int $limit, int $offset, PDO $db)
+        {
+            Auth::checkAuth();
+
+            $query = 'SELECT
+                                t.id,
+                                t.id_usuario,
+                                t.tweet,
+                                t.data,
+                                u.nome,
+                                u.email
+                            FROM 
+                                tweets AS t
+                            INNER JOIN
+                                usuarios AS u
+                            ON 
+                                u.id = t.id_usuario
+                            WHERE
+                                (SELECT
+                                    COUNT(*)
+                                FROM 
+                                    usuarios_seguindo AS us
+                                WHERE
+                                    us.id_usuario = :user_id AND us.id_seguindo = u.id
+                                ) = 1
+                                OR 
+                                    u.id = :user_id
+                            ORDER BY 
+                                t.data DESC
+                            LIMIT
+                                :limit
+                            OFFSET
+                                :offset'; 
+            
+            $stmt = $db->prepare($query);
+            $stmt->bindValue(':user_id', $_SESSION['id'], PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public static function getTotal(PDO $db)
+        {
+            Auth::checkAuth();
+
+            $query = 'SELECT 
+                        COUNT(*) AS total
+                    FROM 
+                        tweets AS t
+                    INNER JOIN
+                        usuarios AS u
+                    ON 
+                        t.id_usuario = u.id
+                    WHERE
+                        t.id_usuario IN (SELECT
+                                    us.id_seguindo
+                                FROM 
+                                    usuarios_seguindo as us
+                                WHERE
+                                    us.id_usuario = :id_usuario)
+                        OR u.id = :id_usuario';
+
+            $stmt = $db->prepare($query);
+            $stmt->bindValue(':id_usuario', $_SESSION['id'], PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['total'];
+        }
+
         public static function getTweetsByEmail(PDO $db, string $email)
         {
             Auth::checkAuth();

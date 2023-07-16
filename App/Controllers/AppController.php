@@ -10,6 +10,10 @@
 
     class AppController extends Controller
     {
+        private int $limit = 5;
+        private int $offset = 0;
+        protected int $page = 1;
+
         public function __construct()
         {
             parent::__construct();
@@ -21,9 +25,18 @@
 
             Auth::checkAuth();
 
+            if(isset($_GET['pagina']))
+            {
+                $this->offset = $this->limit * ((int) $_GET['pagina'] - 1);
+                $this->page = $_GET['pagina'];
+            }
+
             $user = new User(Connection::getDb());
             $user->setId($_SESSION['id']);
             $this->data->userInfo = $user->getInfo();
+            $this->data->tweets = Tweet::getTweetsByPage($this->limit, $this->offset, Connection::getDb());
+
+            $this->data->totalPages = ceil(Tweet::getTotal(Connection::getDb()) / $this->limit);
 
             $this->render('timeline', 'layout');
         }
